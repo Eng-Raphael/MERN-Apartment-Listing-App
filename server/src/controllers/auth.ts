@@ -39,3 +39,42 @@ export const register = asyncHandler(async (req: Request, res: Response, next: N
 
     return sendResponse(res, 201, 'User registered successfully', user);
 });
+
+export const login = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    const {username, password} = req.body;
+
+    const user = await User.findOne({username}).select('+password');
+    if (!user) {
+        return next(new ErrorResponse(`Invalid credentials, user ${username} not found`, 401));
+    }
+
+
+    const isMatch = await user.matchPassword(password);
+    if (!isMatch) {
+        return next(new ErrorResponse('Invalid credentials, incorrect password', 401));
+    }
+
+
+    const token = user.getSignedJwtToken();
+
+    const cookieExpire = parseInt(process.env.JWT_COOKIE_EXPIRE || '30', 10);
+    const cookieOptions = {
+        expires: new Date(Date.now() + cookieExpire * 24 * 60 * 60 * 1000),
+        httpOnly: true,
+    };
+
+    res
+        .status(200)
+        .cookie('token', token, cookieOptions)
+        .json({
+            success: true,
+            message: 'Login successful',
+            token,
+            user: {
+                id: user._id,
+                username: user.username,
+                email: user.email,
+                role: user.role,
+            },
+        });
+});

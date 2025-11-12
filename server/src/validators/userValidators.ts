@@ -41,3 +41,20 @@ export const registerValidation = [
             return true;
         }),
 ];
+
+export const loginValidation = [
+    body('username')
+        .notEmpty()
+        .withMessage('Please provide a username')
+        .not()
+        .isNumeric()
+        .withMessage('Username cannot be a number')
+        .matches(/^[a-zA-Z0-9@_$%^&*!]+$/i)
+        .withMessage('Please provide a valid username'),
+
+    body('password')
+        .notEmpty()
+        .withMessage('Please add a password')
+        .isLength({ min: 8 })
+        .withMessage('Password should be at least 8 characters long'),
+];
