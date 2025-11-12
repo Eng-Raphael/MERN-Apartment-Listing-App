@@ -12,6 +12,10 @@ import xss from 'xss-clean';
 import connectDB from './config/db.ts';
 import errorHandler from "./middleware/error.ts";
 
+//routes
+import authRoutes from './routes/authRoutes.ts';
+
+
 dotenv.config();
 connectDB();
 const app: Application = express();
@@ -64,6 +68,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 });
 
 //routes middle ware will be here soon :)
+app.use('/api/auth', authRoutes);
 
 //error middleware
 app.use(errorHandler);

@@ -7,7 +7,7 @@ dotenv.config();
 const connectDB = async (): Promise<void> => {
     try {
         const conn = await mongoose.connect(process.env.MONGO_URI as string, {
-            dbName: 'libraryApi',
+            dbName: 'Nawy_DB',
         });
 
         console.log(
