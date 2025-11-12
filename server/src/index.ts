@@ -10,6 +10,7 @@ import hpp from 'hpp';
 import cors from 'cors';
 import xss from 'xss-clean';
 import connectDB from './config/db.ts';
+import errorHandler from "./middleware/error.ts";
 
 dotenv.config();
 connectDB();
@@ -62,6 +63,10 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     res.status(500).json({ success: false, error: err.message });
 });
 
+//routes middle ware will be here soon :)
+
+//error middleware
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 const server = app.listen(PORT, () => {
