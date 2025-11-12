@@ -1,11 +1,13 @@
-import jwt, { JwtPayload } from 'jsonwebtoken';
-import asyncHandler from './async.js';
-import ErrorResponse from '../utils/errorResponse.js';
-import User from '../models/User.js';
+import pkg from 'jsonwebtoken';
+const jwt = pkg;
+type JwtPayload = pkg.JwtPayload;
+import asyncHandler from './async.ts';
+import ErrorResponse from '../utils/errorResponse.ts';
+import User from '../models/User.ts';
 import type { Request, Response, NextFunction } from 'express';
 
 
-interface AuthenticatedRequest extends Request {
+export interface AuthenticatedRequest extends Request {
     user?: any;
 }
 

@@ -1,4 +1,5 @@
 import asyncHandler from '../middleware/async.ts';
+import type { AuthenticatedRequest } from '../middleware/auth.ts';
 import User from '../models/User.ts';
 import ErrorResponse from '../utils/errorResponse.ts';
 import type { Request, Response, NextFunction } from 'express';
@@ -91,3 +92,26 @@ export const logout = asyncHandler(async (req: Request, res: Response, next: Nex
         data: {},
     });
 });
+
+export const getMe = asyncHandler(
+    async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+        try {
+            if (!req.user || !req.user._id) {
+                return next(new ErrorResponse('Unauthorized access – please log in', 401));
+            }
+
+            const user = await User.findById(req.user._id).select('-password');
+            if (!user) {
+                return next(new ErrorResponse('User not found', 404));
+            }
+
+            res.status(200).json({
+                success: true,
+                message: 'User data retrieved successfully',
+                data: user,
+            });
+        } catch (err) {
+            next(new ErrorResponse('Unauthorized access – please log in', 401));
+        }
+    }
+);
