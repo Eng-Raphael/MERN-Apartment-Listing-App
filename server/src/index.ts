@@ -45,20 +45,12 @@ const corsOptions = {
         'http://localhost:3000',
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
 };
 
 app.use(cors(corsOptions));
-app.use((req: Request, res: Response, next: NextFunction) => {
-    res.set({
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': '*',
-        'Access-Control-Allow-Headers':
-            'Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token',
-    });
-    next();
-});
-
+app.options("*", cors());
 
 app.get('/', (req: Request, res: Response) => {
     res.send('API is running...');
