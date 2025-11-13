@@ -14,6 +14,7 @@ import errorHandler from "./middleware/error.ts";
 
 //routes
 import authRoutes from './routes/authRoutes.ts';
+import apartmentRoutes from "./routes/apartmentRoutes.ts";
 
 
 dotenv.config();
@@ -69,6 +70,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 
 //routes middle ware will be here soon :)
 app.use('/api/auth', authRoutes);
+app.use('/api/apartments' , apartmentRoutes);
 
 //error middleware
 app.use(errorHandler);

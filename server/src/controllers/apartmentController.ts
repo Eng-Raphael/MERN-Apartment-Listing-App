@@ -1,0 +1,64 @@
+import pkg from 'express';
+type Request = pkg.Request;
+type Response = pkg.Response;
+type NextFunction = pkg.NextFunction;
+
+import Apartment from '../models/Apartment.ts';
+import asyncHandler from '../middleware/async.ts';
+import { normalizeApartmentBody } from '../utils/normalize.ts';
+import ErrorResponse from '../utils/errorResponse.ts';
+
+
+export const createApartment = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    const imageUrls = (req.files as Express.Multer.File[]).map((file) => file.path);
+
+    const cleanBody = normalizeApartmentBody(req.body);
+
+    const apt = await Apartment.create({
+        ...cleanBody,
+        images: imageUrls,
+        user: req.user._id,
+    });
+
+    res.status(201).json({
+        success: true,
+        data: apt,
+    });
+});
+
+
+export const getApartments = asyncHandler(
+    async (req: Request, res: Response, next: NextFunction) => {
+
+        const apartments = await Apartment.find().populate({
+            path: 'user',
+            select: 'firstName lastName email',
+        });
+
+        res.status(200).json({
+            success: true,
+            count: apartments.length,
+            data: apartments,
+        });
+    }
+);
+
+export const getApartment = asyncHandler(
+    async (req: Request, res: Response, next: NextFunction) => {
+        const { id } = req.params;
+
+        const apartment = await Apartment.findById(id).populate({
+            path: 'user',
+            select: 'firstName lastName email',
+        });
+
+        if (!apartment) {
+            return next(new ErrorResponse('Apartment not found', 404));
+        }
+
+        res.status(200).json({
+            success: true,
+            data: apartment,
+        });
+    }
+);
