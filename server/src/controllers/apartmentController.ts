@@ -80,3 +80,41 @@ export const checkReferenceNo = asyncHandler(async (req: Request, res: Response,
         exists: !!exists
     });
 });
+export const searchApartments = asyncHandler(async (req: Request, res: Response) => {
+    const { search, referenceNo, title, compound } = req.query;
+
+    const query: any = {};
+    let projection: any = {};
+    let sort: any = {};
+
+    
+    if (search && (search as string).trim().length > 0) {
+        query.$text = { $search: search as string };
+        projection = { score: { $meta: "textScore" } };
+        sort = { score: { $meta: "textScore" } };
+    }
+
+
+    if (referenceNo) query.referenceNo = referenceNo;
+
+
+    if (!search && title)
+        query.title = { $regex: new RegExp(title as string, "i") };
+
+    if (compound)
+        query.compound = { $regex: new RegExp(compound as string, "i") };
+
+
+    const apartments = await Apartment.find(query, projection)
+        .sort(sort)
+        .populate({
+            path: "user",
+            select: "firstName lastName email",
+        });
+
+    res.status(200).json({
+        success: true,
+        count: apartments.length,
+        data: apartments,
+    });
+});

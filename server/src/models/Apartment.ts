@@ -93,6 +93,13 @@ const ApartmentSchema = new Schema<IApartment>(
     { timestamps: true }
 );
 
+ApartmentSchema.index({
+    referenceNo: "text",
+    title: "text",
+    compound: "text",
+});
+
+
 ApartmentSchema.index({ referenceNo: 1 }, { unique: true });
 ApartmentSchema.index({ compound: 1 });
 
