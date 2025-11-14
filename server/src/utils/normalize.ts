@@ -16,12 +16,29 @@ export const normalizeApartmentBody = (body: any) => {
         },
 
         amenities: {
-            undergroundParking: body['amenities[undergroundParking]'] === 'true',
-            medicalCare: body['amenities[medicalCare]'] === 'true',
-            commercialStrip: body['amenities[commercialStrip]'] === 'true',
-            businessHub: body['amenities[businessHub]'] === 'true',
-            outdoorPool: body['amenities[outdoorPool]'] === 'true',
-            joggingTrails: body['amenities[joggingTrails]'] === 'true',
+            undergroundParking:
+                body['amenities[undergroundParking]'] === 'true' ||
+                body.amenities?.undergroundParking === 'true',
+
+            medicalCare:
+                body['amenities[medicalCare]'] === 'true' ||
+                body.amenities?.medicalCare === 'true',
+
+            commercialStrip:
+                body['amenities[commercialStrip]'] === 'true' ||
+                body.amenities?.commercialStrip === 'true',
+
+            businessHub:
+                body['amenities[businessHub]'] === 'true' ||
+                body.amenities?.businessHub === 'true',
+
+            outdoorPool:
+                body['amenities[outdoorPool]'] === 'true' ||
+                body.amenities?.outdoorPool === 'true',
+
+            joggingTrails:
+                body['amenities[joggingTrails]'] === 'true' ||
+                body.amenities?.joggingTrails === 'true',
         }
     };
 };

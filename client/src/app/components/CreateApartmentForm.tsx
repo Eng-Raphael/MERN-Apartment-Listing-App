@@ -27,7 +27,7 @@ export default function CreateApartmentForm() {
 
         setImagesPreview(updatedList);
 
-        formik.setFieldValue("imagesCount", arr.length);
+        formik.setFieldValue("imagesCount", updatedList.length);
     };
 
     const removeImage = (index: number) => {
@@ -71,6 +71,10 @@ export default function CreateApartmentForm() {
             locationDescription: Yup.string().required(),
             lat: Yup.number().required(),
             long: Yup.number().required(),
+            imagesCount: Yup.number()
+                .min(1, "Please upload at least one image")
+                .required(),
+
         }),
 
         onSubmit: async (values) => {
@@ -95,12 +99,13 @@ export default function CreateApartmentForm() {
                 formDataToSend.append("location[long]", values.long.toString());
 
                 // Amenities (nested booleans)
-                formDataToSend.append("amenities[undergroundParking]", String(values.undergroundParking));
-                formDataToSend.append("amenities[medicalCare]", String(values.medicalCare));
-                formDataToSend.append("amenities[commercialStrip]", String(values.commercialStrip));
-                formDataToSend.append("amenities[businessHub]", String(values.businessHub));
-                formDataToSend.append("amenities[outdoorPool]", String(values.outdoorPool));
-                formDataToSend.append("amenities[joggingTrails]", String(values.joggingTrails));
+                formDataToSend.append("amenities[undergroundParking]", values.undergroundParking ? "true" : "false");
+                formDataToSend.append("amenities[medicalCare]", values.medicalCare ? "true" : "false");
+                formDataToSend.append("amenities[commercialStrip]", values.commercialStrip ? "true" : "false");
+                formDataToSend.append("amenities[businessHub]", values.businessHub ? "true" : "false");
+                formDataToSend.append("amenities[outdoorPool]", values.outdoorPool ? "true" : "false");
+                formDataToSend.append("amenities[joggingTrails]", values.joggingTrails ? "true" : "false");
+
 
                 // Images
                 for (let i = 0; i < imagesPreview.length; i++) {
@@ -316,13 +321,14 @@ export default function CreateApartmentForm() {
                             type="checkbox"
                             name={amenity}
                             checked={(formik.values as any)[amenity]}
-                            onChange={formik.handleChange}
+                            onChange={(e) =>
+                                formik.setFieldValue(amenity, e.target.checked)
+                            }
                         />
                         {amenity.replace(/([A-Z])/g, " $1")}
                     </label>
-
-
                 ))}
+
 
                 {/* IMAGES UPLOAD */}
                 <label className="block mt-6 font-medium">Images</label>
