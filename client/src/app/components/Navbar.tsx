@@ -39,6 +39,8 @@ export default function Navbar() {
             </Link>
 
             <div className="flex gap-4 items-center">
+
+                {/* ===== NOT LOGGED IN ===== */}
                 {!token ? (
                     <>
                         <Link
@@ -56,7 +58,16 @@ export default function Navbar() {
                         </Link>
                     </>
                 ) : (
+                    /* ===== LOGGED IN ===== */
                     <>
+                        {/* CREATE APARTMENT BUTTON HERE */}
+                        <Link
+                            href="/apartments/create"
+                            className="mr-4 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm"
+                        >
+                            + Create Apartment
+                        </Link>
+
                         <span className="text-gray-700">
                             Welcome, <b>{user?.username}</b>
                         </span>
@@ -69,6 +80,7 @@ export default function Navbar() {
                         </button>
                     </>
                 )}
+
             </div>
         </nav>
     );
