@@ -16,6 +16,7 @@ export default function CreateApartmentForm() {
     const [successMsg, setSuccessMsg] = useState("");
     const [imagesPreview, setImagesPreview] = useState<File[]>([]);
     const [apiError, setApiError] = useState("");
+    const [loading, setLoading] = useState(false);
 
     // Handle image drop or selection
     const handleImageUpload = (files: FileList | null) => {
@@ -74,6 +75,7 @@ export default function CreateApartmentForm() {
 
         onSubmit: async (values) => {
             setApiError("");
+            setLoading(true);
 
             try {
                 const formDataToSend = new FormData();
@@ -127,6 +129,8 @@ export default function CreateApartmentForm() {
             } catch (err: any) {
                 console.log(err);
                 setApiError("Failed to create apartment");
+            }finally {
+                setLoading(false);
             }
         },
 
@@ -144,6 +148,12 @@ export default function CreateApartmentForm() {
             {successMsg && (
                 <p className="text-green-600 text-sm mb-4">{successMsg}</p>
             )}
+            {loading && (
+                <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+                    <div className="w-14 h-14 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+                </div>
+            )}
+
 
             <form onSubmit={formik.handleSubmit}>
                 {/* TITLE */}
