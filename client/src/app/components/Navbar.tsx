@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/store/store";
 import { logout } from "@/store/authSlice";
 import { useRouter } from "next/navigation";
+import axios from 'axios';
 
 export default function Navbar() {
     const dispatch = useDispatch();
@@ -12,15 +13,23 @@ export default function Navbar() {
 
     const { user, token } = useSelector((state: RootState) => state.auth);
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
+        try {
+            await axios.get("http://localhost:5001/api/auth/logout", {
+                withCredentials: true,
+            });
+        } catch (err) {
+            console.log("Logout request failed:", err);
+        }
+
         dispatch(logout());
 
-        // clear local storage
         localStorage.removeItem("token");
         localStorage.removeItem("user");
 
         router.push("/login");
     };
+
 
     return (
         <nav className="w-full bg-white shadow-sm px-6 py-4 flex justify-between items-center">
