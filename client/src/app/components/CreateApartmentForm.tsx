@@ -22,19 +22,10 @@ export default function CreateApartmentForm() {
         if (!files) return;
 
         const arr = Array.from(files);
-        const updatedList = [...imagesPreview, ...arr];
-
-        setImagesPreview(updatedList);
+        setImagesPreview(arr);
 
         formik.setFieldValue("imagesCount", arr.length);
     };
-
-    const removeImage = (index: number) => {
-        const updated = imagesPreview.filter((_, i) => i !== index);
-        setImagesPreview(updated);
-        formik.setFieldValue("imagesCount", updated.length);
-    };
-
 
     const formik = useFormik({
         initialValues: {
@@ -374,28 +365,15 @@ export default function CreateApartmentForm() {
                 </div>
 
                 {/* Preview */}
-                
                 <div className="flex gap-4 mt-4 overflow-x-auto">
                     {imagesPreview.map((img, i) => (
-                        <div key={i} className="relative">
-                            <img
-                                src={URL.createObjectURL(img)}
-                                className="w-32 h-24 object-cover rounded-lg shadow"
-                            />
-
-                            {/* REMOVE BUTTON */}
-                            <button
-                                type="button"
-                                onClick={() => removeImage(i)}
-                                className="absolute -top-2 -right-2 bg-red-600 text-white w-6 h-6
-                           rounded-full flex items-center justify-center text-xs"
-                            >
-                                ✕
-                            </button>
-                        </div>
+                        <img
+                            key={i}
+                            src={URL.createObjectURL(img)}
+                            className="w-32 h-24 object-cover rounded-lg shadow"
+                        />
                     ))}
                 </div>
-
 
                 <button
                     type="submit"
