@@ -22,19 +22,25 @@ export default function CreateApartmentForm() {
     const handleImageUpload = (files: FileList | null) => {
         if (!files) return;
 
+        // CLEAR ERROR BEFORE PROCESSING NEW FILES
+        setApiError("");
+
         const arr = Array.from(files);
         const updatedList = [...imagesPreview, ...arr];
 
         if (updatedList.length > 7) {
-            const allowed = 7 - imagesPreview.length; // how many more allowed
-            setApiError(`You uploaded ${arr.length} images but only ${allowed} more can be added (max 7).`);
+            const remaining = 7 - imagesPreview.length;
+
+            setApiError(
+                `You tried adding ${arr.length} images, but only ${remaining} more can be added (max 7).`
+            );
             return;
         }
 
-        setApiError(""); // clear previous error
         setImagesPreview(updatedList);
         formik.setFieldValue("imagesCount", updatedList.length);
     };
+
 
 
 
@@ -42,7 +48,11 @@ export default function CreateApartmentForm() {
         const updated = imagesPreview.filter((_, i) => i !== index);
         setImagesPreview(updated);
         formik.setFieldValue("imagesCount", updated.length);
+
+        
+        setApiError("");
     };
+
 
 
     const formik = useFormik({
