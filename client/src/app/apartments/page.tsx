@@ -11,13 +11,27 @@ export default function ApartmentsPage() {
     const [apartments, setApartments] = useState<Apartment[]>([]);
     const [loading, setLoading] = useState(true);
     const [filtered, setFiltered] = useState<Apartment[]>([]);
+
     const [searchQuery, setSearchQuery] = useState("");
     const [compoundFilter, setCompoundFilter] = useState("");
     const [sortBy, setSortBy] = useState("recent");
+
+    const [compounds, setCompounds] = useState([]);
     let timeoutId: any = null;
 
+    const { user } = useSelector((state: RootState) => state.auth);
+// Load all compounds dynamically
+    useEffect(() => {
+        const fetchCompounds = async () => {
+            const res = await axios.get("http://localhost:5001/api/apartments/compounds/list");
+            setCompounds(res.data.data);
+        };
 
-    const applySort = (list: any[]) => {
+        fetchCompounds();
+    }, []);
+
+    // Sorting function
+    const applySort = (list: Apartment[]) => {
         let sorted = [...list];
 
         if (sortBy === "title") {
@@ -28,22 +42,23 @@ export default function ApartmentsPage() {
             sorted.sort(
                 (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
             );
-
         }
 
         setFiltered(sorted);
     };
 
+    // Compound Filter
     const applyCompound = async (value: string) => {
         setCompoundFilter(value);
 
         const res = await axios.get("http://localhost:5001/api/apartments/search", {
-            params: { q: searchQuery, compound: value },
+            params: { search: searchQuery, compound: value },
         });
 
         applySort(res.data.data);
     };
 
+    // Debounced SEARCH
     const handleSearch = (value: string) => {
         setSearchQuery(value);
 
@@ -51,16 +66,19 @@ export default function ApartmentsPage() {
 
         timeoutId = setTimeout(async () => {
             const res = await axios.get("http://localhost:5001/api/apartments/search", {
-                params: { q: value, compound: compoundFilter },
+                params: { search: value, compound: compoundFilter },
             });
 
             applySort(res.data.data);
         }, 300);
     };
 
+    // Run sorting every time sortBy changes
+    useEffect(() => {
+        applySort(filtered);
+    }, [sortBy]);
 
-    const { user } = useSelector((state: RootState) => state.auth);
-
+    // Load all apartments on mount
     useEffect(() => {
         const fetchApts = async () => {
             try {
@@ -102,9 +120,10 @@ export default function ApartmentsPage() {
                         className="border px-4 py-2 rounded text-black"
                     >
                         <option value="">All Compounds</option>
-                        <option value="Mivida">Mivida</option>
-                        <option value="Palm Hills">Palm Hills</option>
-                        <option value="Mountain View">Mountain View</option>
+
+                        {compounds.map((c) => (
+                            <option key={c} value={c}>{c}</option>
+                        ))}
                     </select>
 
                     {/* SORT */}
@@ -139,7 +158,7 @@ export default function ApartmentsPage() {
 
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                {filtered.map((apt: any) => (
+                {filtered.map((apt) => (
                     <Link
                         key={apt._id}
                         href={user ? `/apartments/${apt._id}` : `/login?redirect=/apartments/${apt._id}`}
@@ -153,8 +172,6 @@ export default function ApartmentsPage() {
                             />
 
                             <h2 className="mt-2 font-semibold text-lg">{apt.title}</h2>
-
-                            {/* LOCATION */}
                             <p className="text-sm text-gray-500">{apt.location?.description}</p>
 
                             {/* BASIC INFO */}
@@ -168,9 +185,9 @@ export default function ApartmentsPage() {
 
                         </div>
                     </Link>
-
                 ))}
             </div>
+
         </div>
     );
 }

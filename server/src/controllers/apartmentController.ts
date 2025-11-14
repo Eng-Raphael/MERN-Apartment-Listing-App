@@ -79,34 +79,32 @@ export const checkReferenceNo = asyncHandler(async (req: Request, res: Response,
         success: true,
         exists: !!exists
     });
+
 });
 export const searchApartments = asyncHandler(async (req: Request, res: Response) => {
-    const { search, referenceNo, title, compound } = req.query;
+    const { search, compound } = req.query;
 
     const query: any = {};
-    let projection: any = {};
-    let sort: any = {};
 
-
+    // SEARCH (regex only)
     if (search && (search as string).trim().length > 0) {
-        query.$text = { $search: search as string };
-        projection = { score: { $meta: "textScore" } };
-        sort = { score: { $meta: "textScore" } };
+        const s = search as string;
+
+        query.$or = [
+            { title: { $regex: s, $options: "i" } },
+            { referenceNo: { $regex: s, $options: "i" } },
+            { compound: { $regex: s, $options: "i" } }
+        ];
     }
 
+    // COMPOUND FILTER
+    if (compound) {
+        query.compound = compound;
+    }
 
-    if (referenceNo) query.referenceNo = referenceNo;
-
-
-    if (!search && title)
-        query.title = { $regex: new RegExp(title as string, "i") };
-
-    if (compound)
-        query.compound = { $regex: new RegExp(compound as string, "i") };
-
-
-    const apartments = await Apartment.find(query, projection)
-        .sort(sort)
+    // SORT ALWAYS BY MOST RECENT (frontend will re-sort)
+    const apartments = await Apartment.find(query)
+        .sort({ createdAt: -1 })
         .populate({
             path: "user",
             select: "firstName lastName email",
@@ -118,3 +116,14 @@ export const searchApartments = asyncHandler(async (req: Request, res: Response)
         data: apartments,
     });
 });
+
+
+export const getCompounds = asyncHandler(async (req, res) => {
+    const compounds = await Apartment.distinct("compound");
+
+    res.status(200).json({
+        success: true,
+        data: compounds
+    });
+});
+

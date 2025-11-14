@@ -1,11 +1,11 @@
 import express from 'express';
 import upload from '../middleware/upload.ts';
-import { createApartment , getApartments ,getApartment , checkReferenceNo , searchApartments} from '../controllers/apartmentController.ts';
+import { createApartment , getApartments ,getApartment , checkReferenceNo , searchApartments,getCompounds} from '../controllers/apartmentController.ts';
 import { protect } from '../middleware/auth.ts';
 
 const router = express.Router();
 
-
+router.get("/compounds/list", getCompounds);
 router.get('/search', searchApartments);
 router.get("/check-reference", checkReferenceNo);
 router.get('/', getApartments);
