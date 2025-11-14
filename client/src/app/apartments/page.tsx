@@ -38,14 +38,30 @@ export default function ApartmentsPage() {
                         href={user ? `/apartments/${apt._id}` : `/login?redirect=/apartments/${apt._id}`}
                     >
                         <div className="p-4 border rounded-lg shadow hover:shadow-md cursor-pointer bg-white text-black">
+
+                            {/* IMAGE */}
                             <img
-                                src={apt.images?.[0]}
+                                src={apt.images?.length ? apt.images[0] : "/no-image.jpg"}
                                 className="w-full h-40 object-cover rounded-md"
                             />
-                            <h2 className="mt-2 font-semibold">{apt.title}</h2>
-                            <p className="text-sm text-gray-600">{apt.location?.description}</p>
+
+                            <h2 className="mt-2 font-semibold text-lg">{apt.title}</h2>
+
+                            {/* LOCATION */}
+                            <p className="text-sm text-gray-500">{apt.location?.description}</p>
+
+                            {/* BASIC INFO */}
+                            <div className="text-sm mt-2 text-gray-700">
+                                <p><b>Bedrooms:</b> {apt.bedrooms}</p>
+                                <p><b>Bathrooms:</b> {apt.bathrooms}</p>
+                                <p><b>Compound:</b> {apt.compound}</p>
+                                <p><b>Delivery:</b> {apt.deliverIn}</p>
+                                <p><b>Finish:</b> {apt.finished}</p>
+                            </div>
+
                         </div>
                     </Link>
+
                 ))}
             </div>
         </div>
