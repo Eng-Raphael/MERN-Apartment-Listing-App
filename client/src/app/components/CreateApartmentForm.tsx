@@ -5,10 +5,13 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import { useAppSelector } from "@/store/hooks";
+import { useRouter } from "next/navigation";
 
 
 export default function CreateApartmentForm() {
+    const router = useRouter();
     const token = useAppSelector((state) => state.auth.token);
+    const [successMsg, setSuccessMsg] = useState("");
     const [imagesPreview, setImagesPreview] = useState<File[]>([]);
     const [apiError, setApiError] = useState("");
 
@@ -98,7 +101,13 @@ export default function CreateApartmentForm() {
                     }
                 );
 
-                alert("Apartment Created!");
+                setSuccessMsg("Apartment created successfully!");
+                formik.resetForm();
+                setImagesPreview([]);
+
+                setTimeout(() => {
+                    router.push("/apartments");
+                }, 1000);
             } catch (err: any) {
                 console.log(err);
                 setApiError("Failed to create apartment");
@@ -114,6 +123,10 @@ export default function CreateApartmentForm() {
 
             {apiError && (
                 <p className="text-red-600 text-sm mb-4">{apiError}</p>
+            )}
+
+            {successMsg && (
+                <p className="text-green-600 text-sm mb-4">{successMsg}</p>
             )}
 
             <form onSubmit={formik.handleSubmit}>
