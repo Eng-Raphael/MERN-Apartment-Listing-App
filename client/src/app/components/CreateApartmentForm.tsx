@@ -23,6 +23,8 @@ export default function CreateApartmentForm() {
 
         const arr = Array.from(files);
         setImagesPreview(arr);
+
+        formik.setFieldValue("imagesCount", arr.length);
     };
 
     const formik = useFormik({
@@ -43,7 +45,7 @@ export default function CreateApartmentForm() {
             businessHub: false,
             outdoorPool: false,
             joggingTrails: false,
-            
+            imagesCount: 0,
         },
 
         validationSchema: Yup.object({
@@ -87,6 +89,10 @@ export default function CreateApartmentForm() {
                 .min(-180, "Longitude cannot be less than -180")
                 .max(180, "Longitude cannot be greater than 180")
                 .required("Longitude is required"),
+
+            imagesCount: Yup.number()
+                .min(1, "Please upload at least one image")
+                .required("Please upload at least one image"),
 
         }),
 
@@ -353,8 +359,8 @@ export default function CreateApartmentForm() {
                         onChange={(e) => handleImageUpload(e.target.files)}
                         className="hidden"
                     />
-                    {formik.touched.title && formik.errors.title && (
-                        <p className="text-red-600 text-sm mt-1">{formik.errors.title}</p>
+                    {formik.touched.imagesCount && formik.errors.imagesCount && (
+                        <p className="text-red-600 text-sm mt-1">{formik.errors.imagesCount}</p>
                     )}
                 </div>
 
