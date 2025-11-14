@@ -37,16 +37,17 @@ export default function ApartmentDetails() {
             {/* TITLE */}
             <h1 className="text-3xl font-bold mb-6">{apartment.title}</h1>
 
-            {/* IMAGES GRID */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+            {/* Apartment Images - horizontal scroll */}
+            <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide mt-4">
                 {apartment.images.map((img: string, i: number) => (
                     <img
                         key={i}
                         src={img}
-                        className="rounded-lg shadow-md w-full h-56 object-cover"
+                        className="w-80 h-56 object-cover rounded-lg shadow-md flex-shrink-0"
                     />
                 ))}
             </div>
+
 
             {/* DETAILS */}
             <div className="space-y-2 text-lg">
@@ -68,19 +69,36 @@ export default function ApartmentDetails() {
                 </p>
             </div>
 
-            {/* AMENITIES */}
-            <div className="mt-6">
-                <h2 className="text-2xl font-semibold">Amenities</h2>
-                <ul className="list-disc ml-5 mt-2">
-                    {Object.entries(apartment.amenities)
-                        .filter(([_, val]) => val === true)
-                        .map(([key]) => (
-                            <li key={key} className="capitalize">
-                                {key.replace(/([A-Z])/g, " $1")}
-                            </li>
-                        ))}
-                </ul>
+            {/* Amenities Section */}
+            <div className="mt-8">
+                <h2 className="text-2xl font-semibold mb-3">Amenities</h2>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {Object.entries(apartment.amenities).map(([key, val]) => (
+                        <div
+                            key={key}
+                            className="flex items-center justify-between bg-gray-100 px-4 py-2 rounded-md"
+                        >
+                            {/* Amenity Name */}
+                            <span className="capitalize font-medium">
+                    {key.replace(/([A-Z])/g, " $1")}
+                </span>
+
+                            {/* Status Badge */}
+                            <span
+                                className={`px-3 py-1 rounded-full text-sm ${
+                                    val
+                                        ? "bg-green-200 text-green-800"
+                                        : "bg-red-200 text-red-800"
+                                }`}
+                            >
+                    {val ? "Available" : "Not Available"}
+                </span>
+                        </div>
+                    ))}
+                </div>
             </div>
+
 
         </div>
     );
