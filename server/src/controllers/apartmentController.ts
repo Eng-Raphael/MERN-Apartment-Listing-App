@@ -62,3 +62,21 @@ export const getApartment = asyncHandler(
         });
     }
 );
+
+export const checkReferenceNo = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    const { referenceNo } = req.query;
+
+    if (!referenceNo) {
+        return res.status(400).json({
+            success: false,
+            message: "referenceNo is required"
+        });
+    }
+
+    const exists = await Apartment.findOne({ referenceNo });
+
+    return res.status(200).json({
+        success: true,
+        exists: !!exists
+    });
+});
