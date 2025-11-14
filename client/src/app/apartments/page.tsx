@@ -5,11 +5,12 @@ import axios from "axios";
 import Link from "next/link";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
+type Apartment = any;
 
 export default function ApartmentsPage() {
-    const [apartments, setApartments] = useState([]);
+    const [apartments, setApartments] = useState<Apartment[]>([]);
     const [loading, setLoading] = useState(true);
-    const [filtered, setFiltered] = useState([]);
+    const [filtered, setFiltered] = useState<Apartment[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [compoundFilter, setCompoundFilter] = useState("");
     const [sortBy, setSortBy] = useState("recent");
@@ -24,7 +25,10 @@ export default function ApartmentsPage() {
         } else if (sortBy === "deliver") {
             sorted.sort((a, b) => a.deliverIn - b.deliverIn);
         } else {
-            sorted.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            sorted.sort(
+                (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            );
+
         }
 
         setFiltered(sorted);
