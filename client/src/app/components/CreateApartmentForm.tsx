@@ -6,6 +6,8 @@ import * as Yup from "yup";
 import axios from "axios";
 import { useAppSelector } from "@/store/hooks";
 import { useRouter } from "next/navigation";
+import DatePicker from "react-datepicker";
+import { setYear } from "date-fns";
 
 
 export default function CreateApartmentForm() {
@@ -48,7 +50,9 @@ export default function CreateApartmentForm() {
             referenceNo: Yup.string().required(),
             bedrooms: Yup.number().min(1).required(),
             bathrooms: Yup.number().min(1).required(),
-            deliverIn: Yup.number().min(2025).required(),
+            deliverIn: Yup.number()
+                .min(new Date().getFullYear(), `Year cannot be before ${new Date().getFullYear()}`)
+                .required(),
             compound: Yup.string().required(),
             finished: Yup.string().oneOf(["FULLY", "HALF"]).required(),
             locationDescription: Yup.string().required(),
@@ -172,14 +176,25 @@ export default function CreateApartmentForm() {
 
                 {/* Deliver in */}
                 <label className="block mt-4 font-medium">Delivery Year</label>
-                <input
-                    name="deliverIn"
-                    type="number"
-                    value={formik.values.deliverIn}
-                    onChange={formik.handleChange}
-                    className="w-full border px-4 py-2 rounded text-black"
-                />
-
+                <div className="w-full">
+                    <DatePicker
+                        selected={
+                            formik.values.deliverIn
+                                ? setYear(new Date(), Number(formik.values.deliverIn))
+                                : null
+                        }
+                        onChange={(date: Date | null) => {
+                            if (date) {
+                                formik.setFieldValue("deliverIn", date.getFullYear());
+                            }
+                        }}
+                        showYearPicker
+                        dateFormat="yyyy"
+                        className="w-full border px-4 py-2 rounded text-black"
+                        minDate={new Date(new Date().getFullYear(), 0, 1)} // cannot pick past years
+                        placeholderText="Select Delivery Year"
+                    />
+                </div>
                 {/* COMPOUND */}
                 <label className="block mt-4 font-medium">Compound</label>
                 <input
