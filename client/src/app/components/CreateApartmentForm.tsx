@@ -49,51 +49,16 @@ export default function CreateApartmentForm() {
         },
 
         validationSchema: Yup.object({
-            title: Yup.string()
-                .min(5, "Title must be at least 5 characters")
-                .required("Title is required"),
-
-            referenceNo: Yup.string().required("Reference number is required"),
-
-            bedrooms: Yup.number()
-                .typeError("Bedrooms must be a number")
-                .min(1, "Must be at least 1 bedroom")
-                .required("Bedrooms are required"),
-
-            bathrooms: Yup.number()
-                .typeError("Bathrooms must be a number")
-                .min(1, "Must be at least 1 bathroom")
-                .required("Bathrooms are required"),
-
-            deliverIn: Yup.number()
-                .typeError("Delivery year must be a number")
-                .min(new Date().getFullYear(), `Year cannot be before ${new Date().getFullYear()}`)
-                .required("Delivery year is required"),
-
-            compound: Yup.string().required("Compound name is required"),
-
-            finished: Yup.string()
-                .oneOf(["FULLY", "HALF"], "Invalid finish type")
-                .required("Finished type is required"),
-
-            locationDescription: Yup.string().required("Location description is required"),
-
-            lat: Yup.number()
-                .typeError("Latitude must be a number")
-                .min(-90, "Latitude cannot be less than -90")
-                .max(90, "Latitude cannot be greater than 90")
-                .required("Latitude is required"),
-
-            long: Yup.number()
-                .typeError("Longitude must be a number")
-                .min(-180, "Longitude cannot be less than -180")
-                .max(180, "Longitude cannot be greater than 180")
-                .required("Longitude is required"),
-
-            imagesCount: Yup.number()
-                .min(1, "Please upload at least one image")
-                .required("Please upload at least one image"),
-
+            title: Yup.string().min(5).required(),
+            referenceNo: Yup.string().required(),
+            bedrooms: Yup.number().min(1).required(),
+            bathrooms: Yup.number().min(1).required(),
+            deliverIn: Yup.number().required(),
+            compound: Yup.string().required(),
+            finished: Yup.string().oneOf(["FULLY", "HALF"]).required(),
+            locationDescription: Yup.string().required(),
+            lat: Yup.number().required(),
+            long: Yup.number().required(),
         }),
 
         onSubmit: async (values) => {
@@ -193,9 +158,9 @@ export default function CreateApartmentForm() {
                     onChange={formik.handleChange}
                     className="w-full border px-4 py-2 rounded text-black"
                 />
-                {formik.touched.referenceNo && formik.errors.referenceNo && (
-                    <p className="text-red-600 text-sm mt-1">{formik.errors.referenceNo}</p>
-                )}
+                {/*{formik.touched.referenceNo && formik.errors.referenceNo && (*/}
+                {/*    <p className="text-red-600 text-sm mt-1">{formik.errors.referenceNo}</p>*/}
+                {/*)}*/}
 
 
                 {/* BEDROOMS */}
@@ -207,9 +172,9 @@ export default function CreateApartmentForm() {
                     onChange={formik.handleChange}
                     className="w-full border px-4 py-2 rounded text-black"
                 />
-                {formik.touched.bedrooms && formik.errors.bedrooms && (
-                    <p className="text-red-600 text-sm mt-1">{formik.errors.bedrooms}</p>
-                )}
+                {/*{formik.touched.bedrooms && formik.errors.bedrooms && (*/}
+                {/*    <p className="text-red-600 text-sm mt-1">{formik.errors.bedrooms}</p>*/}
+                {/*)}*/}
 
 
                 {/* BATHROOMS */}
@@ -221,9 +186,9 @@ export default function CreateApartmentForm() {
                     onChange={formik.handleChange}
                     className="w-full border px-4 py-2 rounded text-black"
                 />
-                {formik.touched.bathrooms && formik.errors.bathrooms && (
-                    <p className="text-red-600 text-sm mt-1">{formik.errors.bathrooms}</p>
-                )}
+                {/*{formik.touched.bathrooms && formik.errors.bathrooms && (*/}
+                {/*    <p className="text-red-600 text-sm mt-1">{formik.errors.bathrooms}</p>*/}
+                {/*)}*/}
 
 
                 {/* Deliver in */}
@@ -247,9 +212,9 @@ export default function CreateApartmentForm() {
                         placeholderText="Select Delivery Year"
                     />
                 </div>
-                {formik.touched.deliverIn && formik.errors.deliverIn && (
-                    <p className="text-red-600 text-sm mt-1">{formik.errors.deliverIn}</p>
-                )}
+                {/*{formik.touched.deliverIn && formik.errors.deliverIn && (*/}
+                {/*    <p className="text-red-600 text-sm mt-1">{formik.errors.deliverIn}</p>*/}
+                {/*)}*/}
 
                 {/* COMPOUND */}
                 <label className="block mt-4 font-medium">Compound</label>
@@ -260,9 +225,9 @@ export default function CreateApartmentForm() {
                     onChange={formik.handleChange}
                     className="w-full border px-4 py-2 rounded text-black"
                 />
-                {formik.touched.compound && formik.errors.compound && (
-                    <p className="text-red-600 text-sm mt-1">{formik.errors.compound}</p>
-                )}
+                {/*{formik.touched.compound && formik.errors.compound && (*/}
+                {/*    <p className="text-red-600 text-sm mt-1">{formik.errors.compound}</p>*/}
+                {/*)}*/}
 
                 {/* FINISHED */}
                 <label className="block mt-4 font-medium">Finished</label>
@@ -275,9 +240,9 @@ export default function CreateApartmentForm() {
                     <option value="FULLY">FULLY</option>
                     <option value="HALF">HALF</option>
                 </select>
-                {formik.touched.finished && formik.errors.finished && (
-                    <p className="text-red-600 text-sm mt-1">{formik.errors.finished}</p>
-                )}
+                {/*{formik.touched.finished && formik.errors.finished && (*/}
+                {/*    <p className="text-red-600 text-sm mt-1">{formik.errors.finished}</p>*/}
+                {/*)}*/}
 
                 {/* LOCATION */}
                 <label className="block mt-6 font-medium">Location Description</label>
@@ -306,11 +271,11 @@ export default function CreateApartmentForm() {
                         onChange={formik.handleChange}
                         className="w-full border px-4 py-2 rounded text-black"
                     />
-                    {formik.touched.locationDescription && formik.errors.locationDescription && (
-                        <p className="text-red-600 text-sm mt-1">
-                            {formik.errors.locationDescription}
-                        </p>
-                    )}
+                    {/*{formik.touched.locationDescription && formik.errors.locationDescription && (*/}
+                    {/*    <p className="text-red-600 text-sm mt-1">*/}
+                    {/*        {formik.errors.locationDescription}*/}
+                    {/*    </p>*/}
+                    {/*)}*/}
 
                 </div>
 
