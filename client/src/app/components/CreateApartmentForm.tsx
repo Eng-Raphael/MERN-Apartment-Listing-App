@@ -23,17 +23,19 @@ export default function CreateApartmentForm() {
         if (!files) return;
 
         const arr = Array.from(files);
-
         const updatedList = [...imagesPreview, ...arr];
 
         if (updatedList.length > 7) {
-            setApiError("Maximum 7 images allowed");
+            const allowed = 7 - imagesPreview.length; // how many more allowed
+            setApiError(`You uploaded ${arr.length} images but only ${allowed} more can be added (max 7).`);
             return;
         }
 
+        setApiError(""); // clear previous error
         setImagesPreview(updatedList);
         formik.setFieldValue("imagesCount", updatedList.length);
     };
+
 
 
     const removeImage = (index: number) => {
@@ -399,6 +401,7 @@ export default function CreateApartmentForm() {
 
 
                 {/* IMAGES UPLOAD */}
+                {/* IMAGES UPLOAD */}
                 <label className="block mt-6 font-medium">Images</label>
 
                 <div
@@ -411,6 +414,11 @@ export default function CreateApartmentForm() {
                     onClick={() => document.getElementById("imagesInput")?.click()}
                 >
                     <p className="text-gray-600">Drag & Drop images OR click to upload</p>
+
+                    <p className="text-xs text-gray-500 mt-1">
+                        Minimum 1 image — Maximum 7 images
+                    </p>
+
                     <input
                         id="imagesInput"
                         type="file"
@@ -419,33 +427,46 @@ export default function CreateApartmentForm() {
                         onChange={(e) => handleImageUpload(e.target.files)}
                         className="hidden"
                     />
+
+                    {/* FORM validation (Formik) */}
                     {formik.touched.imagesCount && formik.errors.imagesCount && (
                         <p className="text-red-600 text-sm mt-1">{formik.errors.imagesCount}</p>
                     )}
                 </div>
 
+                {/* CUSTOM error (apiError) — IMPORTANT: must be OUTSIDE preview and directly below upload box */}
+                {apiError && (
+                    <p className="text-red-600 text-sm mt-2">{apiError}</p>
+                )}
+
                 {/* Preview */}
                 <div className="flex gap-4 mt-4 overflow-x-auto">
                     {imagesPreview.map((img, i) => (
                         <div key={i} className="relative">
-                    <img
-                        src={URL.createObjectURL(img)}
-                        className="w-32 h-24 object-cover rounded-lg shadow"
-                    />
+                            <img
+                                src={URL.createObjectURL(img)}
+                                className="w-32 h-24 object-cover rounded-lg shadow"
+                            />
 
-                    {/* REMOVE BUTTON */}
-                    <button
-                        type="button"
-                        onClick={() => removeImage(i)}
-                        className="absolute -top-2 -right-2 bg-red-600 text-white w-6 h-6
-                           rounded-full flex items-center justify-center text-xs"
-                    >
-                        ✕
-                    </button>
+                            {/* REMOVE BUTTON */}
+                            <button
+                                type="button"
+                                onClick={() => removeImage(i)}
+                                className="absolute -top-2 -right-2 bg-red-600 text-white w-6 h-6
+                   rounded-full flex items-center justify-center text-xs"
+                            >
+                                ✕
+                            </button>
+                        </div>
+                    ))}
                 </div>
-                ))}
-        </div>
 
+                {/* Count */}
+                {imagesPreview.length > 0 && (
+                    <p className="text-sm text-gray-600 mt-2">
+                        {imagesPreview.length} / 7 images uploaded
+                    </p>
+                )}
 
                 <button
                     type="submit"
