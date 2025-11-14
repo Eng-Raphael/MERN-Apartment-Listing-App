@@ -87,7 +87,7 @@ export const searchApartments = asyncHandler(async (req: Request, res: Response)
     let projection: any = {};
     let sort: any = {};
 
-    
+
     if (search && (search as string).trim().length > 0) {
         query.$text = { $search: search as string };
         projection = { score: { $meta: "textScore" } };
