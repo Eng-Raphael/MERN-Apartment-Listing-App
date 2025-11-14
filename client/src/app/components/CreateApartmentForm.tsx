@@ -23,12 +23,18 @@ export default function CreateApartmentForm() {
         if (!files) return;
 
         const arr = Array.from(files);
+
         const updatedList = [...imagesPreview, ...arr];
 
-        setImagesPreview(updatedList);
+        if (updatedList.length > 7) {
+            setApiError("Maximum 7 images allowed");
+            return;
+        }
 
+        setImagesPreview(updatedList);
         formik.setFieldValue("imagesCount", updatedList.length);
     };
+
 
     const removeImage = (index: number) => {
         const updated = imagesPreview.filter((_, i) => i !== index);
@@ -59,23 +65,68 @@ export default function CreateApartmentForm() {
         },
 
         validationSchema: Yup.object({
-            title: Yup.string().min(5).required(),
-            referenceNo: Yup.string().required(),
-            bedrooms: Yup.number().min(1).required(),
-            bathrooms: Yup.number().min(1).required(),
-            deliverIn: Yup.number()
-                .min(new Date().getFullYear(), `Year cannot be before ${new Date().getFullYear()}`)
-                .required(),
-            compound: Yup.string().required(),
-            finished: Yup.string().oneOf(["FULLY", "HALF"]).required(),
-            locationDescription: Yup.string().required(),
-            lat: Yup.number().required(),
-            long: Yup.number().required(),
-            imagesCount: Yup.number()
-                .min(1, "Please upload at least one image")
-                .required(),
+            title: Yup.string()
+                .required("Title is required")
+                .min(5, "Title must be at least 5 characters"),
 
+            referenceNo: Yup.string()
+                .required("Reference number is required")
+                .test(
+                    "unique-ref",
+                    "Reference number already exists",
+                    async function (value) {
+                        if (!value) return false;
+
+                        try {
+                            const res = await axios.get(
+                                `http://localhost:5001/api/apartments/check-reference`,
+                                { params: { referenceNo: value } }
+                            );
+
+                            return !res.data.exists;
+                        } catch (e) {
+                            return true;
+                        }
+                    }
+                ),
+
+            bedrooms: Yup.number()
+                .required("Bedrooms is required")
+                .min(1, "Bedrooms must be at least 1"),
+
+            bathrooms: Yup.number()
+                .required("Bathrooms is required")
+                .min(1, "Bathrooms must be at least 1"),
+
+            deliverIn: Yup.number()
+                .required("Delivery year is required")
+                .min(2025, "Delivery year cannot be before 2025"),
+
+            compound: Yup.string()
+                .required("Compound name is required"),
+
+            finished: Yup.string()
+                .oneOf(["FULLY", "HALF"])
+                .required("Finish status is required"),
+
+            locationDescription: Yup.string().required("Location description is required"),
+
+            lat: Yup.number()
+                .required("Latitude is required")
+                .min(-90, "Latitude cannot be less than -90")
+                .max(90, "Latitude cannot be greater than 90"),
+
+            long: Yup.number()
+                .required("Longitude is required")
+                .min(-180, "Longitude cannot be less than -180")
+                .max(180, "Longitude cannot be greater than 180"),
+
+            imagesCount: Yup.number()
+                .required("Please upload at least one image")
+                .min(1, "At least one image is required")
+                .max(7, "Maximum 7 images are allowed"),
         }),
+
 
         onSubmit: async (values) => {
             setApiError("");
@@ -106,6 +157,10 @@ export default function CreateApartmentForm() {
                 formDataToSend.append("amenities[outdoorPool]", values.outdoorPool ? "true" : "false");
                 formDataToSend.append("amenities[joggingTrails]", values.joggingTrails ? "true" : "false");
 
+                if (values.imagesCount === 0) {
+                    formik.setFieldTouched("imagesCount", true);
+                    return;
+                }
 
                 // Images
                 for (let i = 0; i < imagesPreview.length; i++) {
@@ -184,9 +239,9 @@ export default function CreateApartmentForm() {
                     onChange={formik.handleChange}
                     className="w-full border px-4 py-2 rounded text-black"
                 />
-                {/*{formik.touched.referenceNo && formik.errors.referenceNo && (*/}
-                {/*    <p className="text-red-600 text-sm mt-1">{formik.errors.referenceNo}</p>*/}
-                {/*)}*/}
+                {formik.touched.referenceNo && formik.errors.referenceNo && (
+                    <p className="text-red-600 text-sm mt-1">{formik.errors.referenceNo}</p>
+                )}
 
 
                 {/* BEDROOMS */}
@@ -198,9 +253,9 @@ export default function CreateApartmentForm() {
                     onChange={formik.handleChange}
                     className="w-full border px-4 py-2 rounded text-black"
                 />
-                {/*{formik.touched.bedrooms && formik.errors.bedrooms && (*/}
-                {/*    <p className="text-red-600 text-sm mt-1">{formik.errors.bedrooms}</p>*/}
-                {/*)}*/}
+                {formik.touched.bedrooms && formik.errors.bedrooms && (
+                    <p className="text-red-600 text-sm mt-1">{formik.errors.bedrooms}</p>
+                )}
 
 
                 {/* BATHROOMS */}
@@ -212,9 +267,9 @@ export default function CreateApartmentForm() {
                     onChange={formik.handleChange}
                     className="w-full border px-4 py-2 rounded text-black"
                 />
-                {/*{formik.touched.bathrooms && formik.errors.bathrooms && (*/}
-                {/*    <p className="text-red-600 text-sm mt-1">{formik.errors.bathrooms}</p>*/}
-                {/*)}*/}
+                {formik.touched.bathrooms && formik.errors.bathrooms && (
+                    <p className="text-red-600 text-sm mt-1">{formik.errors.bathrooms}</p>
+                )}
 
 
                 {/* Deliver in */}
@@ -238,9 +293,9 @@ export default function CreateApartmentForm() {
                         placeholderText="Select Delivery Year"
                     />
                 </div>
-                {/*{formik.touched.deliverIn && formik.errors.deliverIn && (*/}
-                {/*    <p className="text-red-600 text-sm mt-1">{formik.errors.deliverIn}</p>*/}
-                {/*)}*/}
+                {formik.touched.deliverIn && formik.errors.deliverIn && (
+                    <p className="text-red-600 text-sm mt-1">{formik.errors.deliverIn}</p>
+                )}
 
                 {/* COMPOUND */}
                 <label className="block mt-4 font-medium">Compound</label>
@@ -251,9 +306,9 @@ export default function CreateApartmentForm() {
                     onChange={formik.handleChange}
                     className="w-full border px-4 py-2 rounded text-black"
                 />
-                {/*{formik.touched.compound && formik.errors.compound && (*/}
-                {/*    <p className="text-red-600 text-sm mt-1">{formik.errors.compound}</p>*/}
-                {/*)}*/}
+                {formik.touched.compound && formik.errors.compound && (
+                    <p className="text-red-600 text-sm mt-1">{formik.errors.compound}</p>
+                )}
 
                 {/* FINISHED */}
                 <label className="block mt-4 font-medium">Finished</label>
@@ -266,9 +321,9 @@ export default function CreateApartmentForm() {
                     <option value="FULLY">FULLY</option>
                     <option value="HALF">HALF</option>
                 </select>
-                {/*{formik.touched.finished && formik.errors.finished && (*/}
-                {/*    <p className="text-red-600 text-sm mt-1">{formik.errors.finished}</p>*/}
-                {/*)}*/}
+                {formik.touched.finished && formik.errors.finished && (
+                    <p className="text-red-600 text-sm mt-1">{formik.errors.finished}</p>
+                )}
 
                 {/* LOCATION */}
                 <label className="block mt-6 font-medium">Location Description</label>
@@ -279,11 +334,18 @@ export default function CreateApartmentForm() {
                     onChange={formik.handleChange}
                     className="w-full border px-4 py-2 rounded text-black"
                 />
+                {formik.touched.locationDescription && formik.errors.locationDescription && (
+                    <p className="text-red-600 text-sm mt-1">
+                        {formik.errors.locationDescription}
+                    </p>
+                )}
 
                 <div className="grid grid-cols-2 gap-4 mt-2">
                     <input
                         name="lat"
                         type="number"
+                        min={-90}
+                        max={90}
                         placeholder="Latitude"
                         value={formik.values.lat}
                         onChange={formik.handleChange}
@@ -292,16 +354,22 @@ export default function CreateApartmentForm() {
                     <input
                         name="long"
                         type="number"
+                        min={-180}
+                        max={180}
                         placeholder="Longitude"
                         value={formik.values.long}
                         onChange={formik.handleChange}
                         className="w-full border px-4 py-2 rounded text-black"
                     />
-                    {/*{formik.touched.locationDescription && formik.errors.locationDescription && (*/}
-                    {/*    <p className="text-red-600 text-sm mt-1">*/}
-                    {/*        {formik.errors.locationDescription}*/}
-                    {/*    </p>*/}
-                    {/*)}*/}
+
+                    {formik.touched.lat && formik.errors.lat && (
+                        <p className="text-red-600 text-sm mt-1">{formik.errors.lat}</p>
+                    )}
+
+                    {formik.touched.long && formik.errors.long && (
+                        <p className="text-red-600 text-sm mt-1">{formik.errors.long}</p>
+                    )}
+
 
                 </div>
 
