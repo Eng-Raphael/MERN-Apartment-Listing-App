@@ -100,7 +100,7 @@ export default function ApartmentsPage() {
             <h1 className="text-3xl font-bold mb-5 text-black">Available Apartments</h1>
 
             <div className="bg-white p-5 rounded-lg shadow mb-8 border">
-                <h2 className="text-xl font-semibold mb-4 text-black">🔍 Search Apartments</h2>
+                <h2 className="text-xl font-semibold mb-4 text-black"> Search Apartments</h2>
 
                 <div className="flex flex-col md:flex-row gap-4">
 
