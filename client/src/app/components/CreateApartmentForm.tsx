@@ -84,6 +84,7 @@ export default function CreateApartmentForm() {
 
             referenceNo: Yup.string()
                 .required("Reference number is required")
+                .matches(/^REF-\d+$/, "Reference number must start with 'REF-' followed by numbers")
                 .test(
                     "unique-ref",
                     "Reference number already exists",
@@ -254,6 +255,7 @@ export default function CreateApartmentForm() {
                     value={formik.values.referenceNo}
                     onChange={formik.handleChange}
                     className="w-full border px-4 py-2 rounded text-black"
+                    placeholder="e.g., REF-1001"
                 />
                 {formik.touched.referenceNo && formik.errors.referenceNo && (
                     <p className="text-red-600 text-sm mt-1">{formik.errors.referenceNo}</p>
