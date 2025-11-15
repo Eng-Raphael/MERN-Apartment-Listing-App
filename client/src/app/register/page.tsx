@@ -19,13 +19,15 @@ interface RegisterFormValues {
 
 const RegisterSchema = Yup.object().shape({
     firstName: Yup.string()
+        .required('First name is required')
         .min(2, 'First name should be at least 2 characters')
         .max(30, 'First name too long')
-        .required('First name is required'),
+        .matches(/[A-Za-z]/, "First name must include at least two letter — numbers only are not allowed"),
     lastName: Yup.string()
+        .required('Last name is required')
         .min(2, 'Last name should be at least 2 characters')
         .max(30, 'Last name too long')
-        .required('Last name is required'),
+        .matches(/[A-Za-z]/, "Last name must include at least two letter — numbers only are not allowed"),
     username: Yup.string()
         .min(3, "Username should be at least 3 characters")
         .required("Username is required")
