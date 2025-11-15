@@ -10,7 +10,7 @@ and docker compose file so we can run application by one command
 - Protected routes where user can access only certain pages / features if he
     is a registered user and loged in
 - Secure authentication using JWT (HttpOnly cookies)
-- Users can list apartments to be finished from current year moving forward not backwards
+- Users can list apartments with a delivery year starting from the current year and onward — past years are not allowed.
 - Next.js App Router with clean UI and strong validation (Formik + Yup)
 - Live reference-number / username / email validation (frontend + backend)
 - Drag & drop image upload with previews (max 7 images)
