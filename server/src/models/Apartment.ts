@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
-import type { IApartment } from '../types/express/apartmentTypes.ts';
+import type { IApartment } from '../types/express/apartmentTypes.js';
 
 const ApartmentSchema = new Schema<IApartment>(
     {

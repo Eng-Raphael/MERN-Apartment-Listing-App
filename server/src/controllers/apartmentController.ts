@@ -3,10 +3,10 @@ type Request = pkg.Request;
 type Response = pkg.Response;
 type NextFunction = pkg.NextFunction;
 
-import Apartment from '../models/Apartment.ts';
-import asyncHandler from '../middleware/async.ts';
-import { normalizeApartmentBody } from '../utils/normalize.ts';
-import ErrorResponse from '../utils/errorResponse.ts';
+import Apartment from '../models/Apartment.js';
+import asyncHandler from '../middleware/async.js';
+import { normalizeApartmentBody } from '../utils/normalize.js';
+import ErrorResponse from '../utils/errorResponse.js';
 
 
 export const createApartment = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {

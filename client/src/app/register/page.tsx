@@ -50,6 +50,11 @@ const RegisterSchema = Yup.object().shape({
     email: Yup.string()
         .email("Please enter a valid email")
         .required("Email is required")
+        .matches(/\.com$/, "Email must end with .com")
+        .matches(
+            /@(gmail|yahoo|hotmail|outlook)\.com$/,
+            "Email must be one of: @gmail.com, @yahoo.com, @hotmail.com, or @outlook.com"
+        )
         .test(
             "unique-email",
             "Email already exists",
