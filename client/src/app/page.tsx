@@ -4,6 +4,9 @@ import { redirect } from "next/navigation";
 export default function Home() {
     const token = cookies().get("token")?.value;
 
-    if (token) redirect("/apartments");
+    if (token) {
+        redirect("/apartments");
+    }
+
     redirect("/register");
 }

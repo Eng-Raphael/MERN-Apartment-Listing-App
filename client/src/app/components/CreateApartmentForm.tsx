@@ -18,11 +18,11 @@ export default function CreateApartmentForm() {
     const [apiError, setApiError] = useState("");
     const [loading, setLoading] = useState(false);
 
-    // Handle image drop or selection
+
     const handleImageUpload = (files: FileList | null) => {
         if (!files) return;
 
-        // CLEAR ERROR BEFORE PROCESSING NEW FILES
+
         setApiError("");
 
         const arr = Array.from(files);
@@ -79,7 +79,8 @@ export default function CreateApartmentForm() {
         validationSchema: Yup.object({
             title: Yup.string()
                 .required("Title is required")
-                .min(5, "Title must be at least 5 characters"),
+                .min(5, "Title must be at least 5 characters")
+                .matches(/[A-Za-z]/, "Title must include at least one letter — numbers only are not allowed"),
 
             referenceNo: Yup.string()
                 .required("Reference number is required")
@@ -91,7 +92,7 @@ export default function CreateApartmentForm() {
 
                         try {
                             const res = await axios.get(
-                                `http://localhost:5001/api/apartments/check-reference`,
+                                `${process.env.NEXT_PUBLIC_API_URL}/apartments/check-reference`,
                                 { params: { referenceNo: value } }
                             );
 
@@ -115,13 +116,16 @@ export default function CreateApartmentForm() {
                 .min(2025, "Delivery year cannot be before 2025"),
 
             compound: Yup.string()
-                .required("Compound name is required"),
+                .required("Compound name is required")
+                .matches(/[A-Za-z]/, "Compound name must include at least one letter — numbers only are not allowed"),
 
             finished: Yup.string()
                 .oneOf(["FULLY", "HALF"])
                 .required("Finish status is required"),
 
-            locationDescription: Yup.string().required("Location description is required"),
+            locationDescription: Yup.string()
+                            .required("Location description is required")
+                .matches(/[A-Za-z]/, "Location description must include at least one letter — numbers only are not allowed"),
 
             lat: Yup.number()
                 .required("Latitude is required")
@@ -147,7 +151,7 @@ export default function CreateApartmentForm() {
             try {
                 const formDataToSend = new FormData();
 
-                // Normal fields
+
                 formDataToSend.append("title", values.title);
                 formDataToSend.append("referenceNo", values.referenceNo);
                 formDataToSend.append("bedrooms", values.bedrooms.toString());
@@ -156,12 +160,12 @@ export default function CreateApartmentForm() {
                 formDataToSend.append("compound", values.compound);
                 formDataToSend.append("finished", values.finished);
 
-                // Location (nested)
+
                 formDataToSend.append("location[description]", values.locationDescription);
                 formDataToSend.append("location[lat]", values.lat.toString());
                 formDataToSend.append("location[long]", values.long.toString());
 
-                // Amenities (nested booleans)
+
                 formDataToSend.append("amenities[undergroundParking]", values.undergroundParking ? "true" : "false");
                 formDataToSend.append("amenities[medicalCare]", values.medicalCare ? "true" : "false");
                 formDataToSend.append("amenities[commercialStrip]", values.commercialStrip ? "true" : "false");
@@ -174,13 +178,13 @@ export default function CreateApartmentForm() {
                     return;
                 }
 
-                // Images
+
                 for (let i = 0; i < imagesPreview.length; i++) {
                     formDataToSend.append("images", imagesPreview[i]);
                 }
 
                 const res = await axios.post(
-                    "http://localhost:5001/api/apartments/create",
+                    `${process.env.NEXT_PUBLIC_API_URL}/apartments/create`,
                     formDataToSend,
                     {
                         headers: {
@@ -410,7 +414,7 @@ export default function CreateApartmentForm() {
                 ))}
 
 
-                {/* IMAGES UPLOAD */}
+
                 {/* IMAGES UPLOAD */}
                 <label className="block mt-6 font-medium">Images</label>
 
@@ -444,7 +448,7 @@ export default function CreateApartmentForm() {
                     )}
                 </div>
 
-                {/* CUSTOM error (apiError) — IMPORTANT: must be OUTSIDE preview and directly below upload box */}
+
                 {apiError && (
                     <p className="text-red-600 text-sm mt-2">{apiError}</p>
                 )}

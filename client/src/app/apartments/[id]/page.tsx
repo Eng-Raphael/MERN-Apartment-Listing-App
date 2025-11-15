@@ -20,7 +20,7 @@ export default function ApartmentDetails() {
         }
 
         const fetchApt = async () => {
-            const res = await axios.get(`http://localhost:5001/api/apartments/${id}`, {
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/apartments/${id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setApartment(res.data.data);

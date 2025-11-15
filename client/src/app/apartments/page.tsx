@@ -20,17 +20,17 @@ export default function ApartmentsPage() {
     let timeoutId: any = null;
 
     const { user } = useSelector((state: RootState) => state.auth);
-// Load all compounds dynamically
+
     useEffect(() => {
         const fetchCompounds = async () => {
-            const res = await axios.get("http://localhost:5001/api/apartments/compounds/list");
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/apartments/compounds/list`);
             setCompounds(res.data.data);
         };
 
         fetchCompounds();
     }, []);
 
-    // Sorting function
+
     const applySort = (list: Apartment[]) => {
         let sorted = [...list];
 
@@ -47,25 +47,25 @@ export default function ApartmentsPage() {
         setFiltered(sorted);
     };
 
-    // Compound Filter
+
     const applyCompound = async (value: string) => {
         setCompoundFilter(value);
 
-        const res = await axios.get("http://localhost:5001/api/apartments/search", {
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/apartments/search`, {
             params: { search: searchQuery, compound: value },
         });
 
         applySort(res.data.data);
     };
 
-    // Debounced SEARCH
+
     const handleSearch = (value: string) => {
         setSearchQuery(value);
 
         clearTimeout(timeoutId);
 
         timeoutId = setTimeout(async () => {
-            const res = await axios.get("http://localhost:5001/api/apartments/search", {
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/apartments/search`, {
                 params: { search: value, compound: compoundFilter },
             });
 
@@ -73,16 +73,16 @@ export default function ApartmentsPage() {
         }, 300);
     };
 
-    // Run sorting every time sortBy changes
+
     useEffect(() => {
         applySort(filtered);
     }, [sortBy]);
 
-    // Load all apartments on mount
+
     useEffect(() => {
         const fetchApts = async () => {
             try {
-                const res = await axios.get("http://localhost:5001/api/apartments");
+                const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/apartments`);
                 setApartments(res.data.data);
                 setFiltered(res.data.data);
             } catch (err) {

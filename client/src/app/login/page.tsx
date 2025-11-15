@@ -32,12 +32,12 @@ export default function LoginPage() {
 
             try {
                 const res = await axios.post(
-                    "http://localhost:5001/api/auth/login",
+                    `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
                     values,
                     { withCredentials: true }
                 );
 
-                // Save to Redux
+
                 dispatch(
                     setCredentials({
                         user: res.data.user,
@@ -45,11 +45,11 @@ export default function LoginPage() {
                     })
                 );
 
-                // Persist locally
+
                 localStorage.setItem("token", res.data.token);
                 localStorage.setItem("user", JSON.stringify(res.data.user));
 
-                router.push("/"); // go home OR to apartments
+                router.push("/");
             } catch (err: any) {
                 console.log(err);
                 setApiError(

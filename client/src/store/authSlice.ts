@@ -17,7 +17,7 @@ interface AuthState {
 
 const initialState: AuthState = {
     user: null,
-    token: null, // we'll fill this from login later
+    token: null,
 };
 
 const authSlice = createSlice({

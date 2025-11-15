@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import api from '@/lib/apiClient';
+import axios from 'axios';
 
 interface RegisterFormValues {
     firstName: string;
@@ -26,11 +27,48 @@ const RegisterSchema = Yup.object().shape({
         .max(30, 'Last name too long')
         .required('Last name is required'),
     username: Yup.string()
-        .min(3, 'Username should be at least 3 characters')
-        .required('Username is required'),
+        .min(3, "Username should be at least 3 characters")
+        .required("Username is required")
+        .test(
+            "unique-username",
+            "Username already exists",
+            async function (value) {
+                if (!value) return false;
+
+                try {
+                    const res = await axios.get(
+                        `${process.env.NEXT_PUBLIC_API_URL}/auth/check-username`,
+                        { params: { username: value } }
+                    );
+
+                    return !res.data.exists;
+                } catch (e) {
+                    return true;
+                }
+            }
+        ),
     email: Yup.string()
-        .email('Please enter a valid email')
-        .required('Email is required'),
+        .email("Please enter a valid email")
+        .required("Email is required")
+        .test(
+            "unique-email",
+            "Email already exists",
+            async function (value) {
+                if (!value) return false;
+
+                try {
+                    const res = await axios.get(
+                        `${process.env.NEXT_PUBLIC_API_URL}/auth/check-email`,
+                        { params: { email: value } }
+                    );
+
+                    return !res.data.exists;
+                } catch (e) {
+                    return true;
+                }
+            }
+        ),
+
     password: Yup.string()
         .min(8, 'Password should be at least 8 characters')
         .required('Password is required'),
@@ -69,10 +107,10 @@ export default function RegisterPage() {
                 role: values.role,
             };
 
-            const res = await api.post('/api/auth/register', payload);
+            const res = await api.post('/auth/register', payload);
 
             if (res.data?.success) {
-                // Option 1: redirect to login so user can log in and get token
+
                 router.push('/login');
             } else {
                 setServerError(res.data?.message || 'Registration failed');
@@ -211,26 +249,6 @@ export default function RegisterPage() {
                                     className="text-xs text-red-600 mt-1"
                                 />
                             </div>
-
-
-                            {/*<div>*/}
-                            {/*    <label className="block text-sm font-medium mb-1">*/}
-                            {/*        Role*/}
-                            {/*    </label>*/}
-                            {/*    <Field*/}
-                            {/*        as="select"*/}
-                            {/*        name="role"*/}
-                            {/*        className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"*/}
-                            {/*    >*/}
-                            {/*        <option value="user">User</option>*/}
-                            {/*        <option value="admin">Admin</option>*/}
-                            {/*    </Field>*/}
-                            {/*    <ErrorMessage*/}
-                            {/*        name="role"*/}
-                            {/*        component="p"*/}
-                            {/*        className="text-xs text-red-600 mt-1"*/}
-                            {/*    />*/}
-                            {/*</div>*/}
 
                             {/* Submit */}
                             <button

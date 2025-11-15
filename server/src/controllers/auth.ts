@@ -115,3 +115,34 @@ export const getMe = asyncHandler(
         }
     }
 );
+
+export const checkEmail = asyncHandler(async (req, res) => {
+    const { email } = req.query;
+
+    if (!email) {
+        return res.status(400).json({ success: false, message: "Email is required" });
+    }
+
+    const exists = await User.findOne({ email });
+
+    return res.status(200).json({
+        success: true,
+        exists: !!exists,
+    });
+});
+
+
+export const checkUsername = asyncHandler(async (req, res) => {
+    const { username } = req.query;
+
+    if (!username) {
+        return res.status(400).json({ success: false, message: "Username is required" });
+    }
+
+    const exists = await User.findOne({ username });
+
+    return res.status(200).json({
+        success: true,
+        exists: !!exists,
+    });
+});

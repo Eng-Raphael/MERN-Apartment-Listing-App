@@ -15,7 +15,7 @@ export default function Navbar() {
 
     const handleLogout = async () => {
         try {
-            await axios.get("http://localhost:5001/api/auth/logout", {
+            await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`, {
                 withCredentials: true,
             });
         } catch (err) {
@@ -33,14 +33,14 @@ export default function Navbar() {
 
     return (
         <nav className="w-full bg-white shadow-sm px-6 py-4 flex justify-between items-center">
-            {/* Logo */}
+
             <Link href="/" className="text-xl font-bold text-blue-600">
-                Apartment Finder 🏠
+                Apartment Finder
             </Link>
 
             <div className="flex gap-4 items-center">
 
-                {/* ===== NOT LOGGED IN ===== */}
+
                 {!token ? (
                     <>
                         <Link
@@ -58,9 +58,9 @@ export default function Navbar() {
                         </Link>
                     </>
                 ) : (
-                    /* ===== LOGGED IN ===== */
+
                     <>
-                        {/* CREATE APARTMENT BUTTON HERE */}
+
                         <Link
                             href="/apartments/create"
                             className="mr-4 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm"

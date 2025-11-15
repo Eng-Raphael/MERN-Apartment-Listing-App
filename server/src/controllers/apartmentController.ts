@@ -86,7 +86,7 @@ export const searchApartments = asyncHandler(async (req: Request, res: Response)
 
     const query: any = {};
 
-    // SEARCH (regex only)
+
     if (search && (search as string).trim().length > 0) {
         const s = search as string;
 
@@ -97,12 +97,12 @@ export const searchApartments = asyncHandler(async (req: Request, res: Response)
         ];
     }
 
-    // COMPOUND FILTER
+
     if (compound) {
         query.compound = compound;
     }
 
-    // SORT ALWAYS BY MOST RECENT (frontend will re-sort)
+
     const apartments = await Apartment.find(query)
         .sort({ createdAt: -1 })
         .populate({
