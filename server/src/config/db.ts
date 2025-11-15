@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import colors from 'colors';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -11,10 +10,10 @@ const connectDB = async (): Promise<void> => {
         });
 
         console.log(
-            `MongoDB Connected: ${conn.connection.host}`.cyan.underline.bold
+            "MongoDB Connected: ${conn.connection.host}"
         );
     } catch (error) {
-        console.error(`Error: ${(error as Error).message}`.red.bold);
+        console.error("Error: ${(error as Error).message}");
         process.exit(1);
     }
 };
