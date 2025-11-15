@@ -11,7 +11,9 @@ services:
       - mongo_data:/data/db
 
   backend:
-    build: ./server
+    build:
+      context: ./server
+      dockerfile: Dockerfile
     container_name: backend_container
     restart: always
     ports:
@@ -20,16 +22,18 @@ services:
       - MONGO_URI=mongodb://mongo:27017/apartmentsdb
       - NODE_ENV=development
       - PORT=5001
-      - JWT_SECRET=${JWT_SECRET}
-      - JWT_EXPIRE=${JWT_EXPIRE}
-      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
-      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
-      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
+      - JWT_SECRET=fwdhfglwerfhgwklgnwnjilejw7897947839rfnlkfnwlhjr8932743290ujfoijsx!@!#
+      - JWT_EXPIRE=12h
+      - CLOUDINARY_CLOUD_NAME=dxekwj5zo
+      - CLOUDINARY_API_KEY=558422293764766
+      - CLOUDINARY_API_SECRET=oRBzjiP8EK8w3zPD9MlABWVZZqM
     depends_on:
       - mongo
 
   frontend:
-    build: ./client
+    build:
+      context: ./client
+      dockerfile: Dockerfile
     container_name: frontend_container
     restart: always
     ports:
