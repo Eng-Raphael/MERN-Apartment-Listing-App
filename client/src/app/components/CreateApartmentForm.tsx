@@ -364,7 +364,7 @@ export default function CreateApartmentForm() {
                         type="number"
                         min={-90}
                         max={90}
-                        placeholder="Latitude"
+                        placeholder="Latitude e.g., From -90 to 90"
                         value={formik.values.lat}
                         onChange={formik.handleChange}
                         className="w-full border px-4 py-2 rounded text-black"
@@ -374,7 +374,7 @@ export default function CreateApartmentForm() {
                         type="number"
                         min={-180}
                         max={180}
-                        placeholder="Longitude"
+                        placeholder="Longitude e.g., From -180 to 180"
                         value={formik.values.long}
                         onChange={formik.handleChange}
                         className="w-full border px-4 py-2 rounded text-black"
