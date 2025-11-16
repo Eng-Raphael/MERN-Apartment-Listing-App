@@ -11,6 +11,7 @@ and docker compose file so we can run application by one command
     is a registered user and loged in
 - Secure authentication using JWT (HttpOnly cookies)
 - Users can list apartments with a delivery year starting from the current year and onward — past years are not allowed.
+- Photo gallery with scrolling when reach max width
 - Next.js App Router with clean UI and strong validation (Formik + Yup)
 - Live reference-number / username / email validation (frontend + backend)
 - Drag & drop image upload with previews (max 7 images)
