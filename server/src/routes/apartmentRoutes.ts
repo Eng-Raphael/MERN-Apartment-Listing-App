@@ -11,6 +11,6 @@ router.get("/check-reference", checkReferenceNo);
 router.get('/', getApartments);
 router.get('/:id', getApartment);
 router.post('/create', protect, upload.array('images', 7), createApartment);
-router.get("/check-reference", checkReferenceNo);
+
 
 export default router;
